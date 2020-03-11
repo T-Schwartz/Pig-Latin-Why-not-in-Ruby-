@@ -1,0 +1,98 @@
+myStack=[]
+outputString=""
+stackMax=20
+stackCounter=-1
+
+# open parenthesis
+def openParen():
+    push("(")
+
+#close parenthesis 
+def closeParen():
+    global myStack, stackCounter
+    
+    #remove everything in the stack until '('
+    while not myStack[stackCounter]=='(':
+        pop(myStack[stackCounter])
+    
+    #pop off the '('
+    pop(myStack[stackCounter])
+            
+#operator
+def operator(oper):
+    if isEmpty():
+        push(oper)
+    elif priority(oper)<=priority(myStack[stackCounter]):
+        for item in myStack:
+            pop(item)
+        push(oper)
+    else:
+        push(oper)
+    
+#Letter
+def variable(letter):
+    global outputString
+    outputString+=letter
+ 
+#Push charecter onto stack
+def push(char):
+    global myStack, stackCounter, stackMax
+        
+    if stackCounter == stackMax:
+        print ("You have reached the maximum item allowed in the stack")
+    else:
+        myStack.append(char)
+        stackCounter+=1
+    
+#Pop charecter off of stack
+def pop(charecter):
+    global myStack, outputString, stackCounter
+    
+    if not isEmpty():
+        if charecter == '(':
+            myStack.pop(stackCounter)
+        else:
+            outputString+=(myStack.pop(stackCounter))
+    stackCounter-=1
+    
+#check if the stack is empty
+def isEmpty():
+    global myStack
+    return (len(myStack)==0)
+
+#return the priority of the operator
+def priority(operand):
+    if operand=='(' or operand==')':
+        return 0
+    elif operand=='+' or operand=='-':
+        return 1
+    elif operand=='*' or operand=='/':
+        return 2
+    elif operand=='^':
+        return 3
+
+
+def main():
+    global myStack, outputString, stackCounter
+
+    operand=['+','-','/','*','^']
+    
+    inputString=input("Type a string in infix notation: ")
+    
+    for letter in inputString:
+        if letter=="(":
+            openParen()
+        elif letter==")":
+            closeParen()
+        elif letter in operand:
+            operator(letter)
+        else:
+            variable(letter)
+    
+    #pop the remainder of the stack
+    for i in range (len(myStack)):
+        pop(myStack[stackCounter])
+        
+    print (outputString)
+    
+main()
